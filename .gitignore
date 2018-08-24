@@ -1,5 +1,7 @@
 *.iml
 *.png
+*.class
 
 
 .idea/
+target/
