@@ -4,11 +4,11 @@ spring:
   application:
     name: ly-registry
 eureka:
-  client:
+  client: # 设置其本身不为客户端，先不搭建集群
     fetch-registry: false
     register-with-eureka: false
     service-url:
       defaultZone: http://127.0.0.1:${server.port}/eureka
   server:
-    enable-self-preservation: false # 关闭自我保护
+    enable-self-preservation: false # 关闭自我保护，服务掉线了就直接让其掉线
     eviction-interval-timer-in-ms: 5000 # 每隔5秒进行一次服务列表清理

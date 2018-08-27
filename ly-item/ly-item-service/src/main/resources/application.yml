@@ -14,9 +14,9 @@ eureka:
   client:
     service-url:
       defaultZone: http://127.0.0.1:10086/eureka
-  instance:
+  instance: # 服务提供者的续约
     lease-renewal-interval-in-seconds: 5 # 每隔5秒发送一次心跳
     lease-expiration-duration-in-seconds: 10 # 10秒不发送就过期
-    prefer-ip-address: true
+    prefer-ip-address: true # 服务名用ip显示
     ip-address: 127.0.0.1
-    instance-id: ${spring.application.name}:${server.port}
+    instance-id: ${spring.application.name}:${server.port} # 每个实例用名称+端口显示
