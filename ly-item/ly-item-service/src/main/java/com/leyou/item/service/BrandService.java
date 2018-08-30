@@ -55,4 +55,21 @@ public class BrandService {
             this.brandMapper.insertCategoryBrand(cid, brand.getId());
         }
     }
+
+    @Transactional
+    public void updateBrand(List<Long> categories, Brand brand) {
+        //修改品牌
+        brandMapper.updateByPrimaryKeySelective(brand);
+        //维护中间表
+        for (Long categoryId : categories) {
+            brandMapper.updateCategoryBrand(categoryId, brand.getId());
+        }
+    }
+
+    public void deleteBrand(Long bid) {
+        //删除品牌表
+        brandMapper.deleteByPrimaryKey(bid);
+        //维护中间表
+        brandMapper.deleteCategoryBrandByBid(bid);
+    }
 }
