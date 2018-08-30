@@ -36,4 +36,5 @@ public class UploadController {
         // 返回200，并且携带url路径
         return ResponseEntity.ok(url);
     }
+
 }

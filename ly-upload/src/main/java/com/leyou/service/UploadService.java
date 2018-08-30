@@ -13,7 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * @author: LieutenantChen
+ * @author: Lieutenant
  * @create: 2018-08-29 01:05
  **/
 @Service
@@ -40,7 +40,7 @@ public class UploadService {
             }
             // 2、保存图片
             // 2.1、生成保存目录
-            File dir = new File("C:\\upload");
+            File dir = new File("C:\\project\\leyou\\ly-upload\\src\\main\\resources\\static");
             if (!dir.exists()) {
                 dir.mkdirs();
             }
@@ -48,7 +48,7 @@ public class UploadService {
             file.transferTo(new File(dir, file.getOriginalFilename()));
 
             // 2.3、拼接图片地址
-            String url = "http://localhost:8082/upload" + file.getOriginalFilename();
+            String url = "http://localhost:8082/" + file.getOriginalFilename();
 
             return url;
         } catch (Exception e) {
