@@ -12,17 +12,57 @@ public class Sku {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    /**
+     * tb_spu表的id
+     */
     private Long spuId;
+
+    /**
+     * 商品标题
+     */
     private String title;
+
+    /**
+     * 商品的图片,多个图片以‘,’分割
+     */
     private String images;
+
+    /**
+     * 销售价格，单位为分
+     */
     private Long price;
-    private String ownSpec;// 商品特殊规格的键值对
-    private String indexes;// 商品特殊规格的下标
-    private Boolean enable;// 是否有效，逻辑删除用
-    private Date createTime;// 创建时间
-    private Date lastUpdateTime;// 最后修改时间
+
+    /**
+     * 特有规格属性在spu属性模板中的对应下标组合
+     */
+    private String indexes;
+
+    /**
+     * 特有规格参数键值对，json格式，有顺序
+     */
+    private String ownSpec;
+
+    /**
+     * 是否有效
+     */
+    private Boolean enable;
+
+    /**
+     * 添加时间
+     */
+    private Date createTime;
+
+    /**
+     * 最后修改时间
+     */
+    private Date lastUpdateTime;
+
+    /**
+     * 商品库存
+     */
     @Transient
-    private Long stock;// 库存
+    private Integer stock;
 
     public Long getId() {
         return id;
@@ -64,20 +104,20 @@ public class Sku {
         this.price = price;
     }
 
-    public String getOwnSpec() {
-        return ownSpec;
-    }
-
-    public void setOwnSpec(String ownSpec) {
-        this.ownSpec = ownSpec;
-    }
-
     public String getIndexes() {
         return indexes;
     }
 
     public void setIndexes(String indexes) {
         this.indexes = indexes;
+    }
+
+    public String getOwnSpec() {
+        return ownSpec;
+    }
+
+    public void setOwnSpec(String ownSpec) {
+        this.ownSpec = ownSpec;
     }
 
     public Boolean getEnable() {
@@ -104,12 +144,11 @@ public class Sku {
         this.lastUpdateTime = lastUpdateTime;
     }
 
-    public Long getStock() {
+    public Integer getStock() {
         return stock;
     }
 
-    public void setStock(Long stock) {
+    public void setStock(Integer stock) {
         this.stock = stock;
     }
-
 }

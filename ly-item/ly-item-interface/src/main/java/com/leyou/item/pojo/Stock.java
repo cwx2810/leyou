@@ -10,14 +10,23 @@ import javax.persistence.Table;
 @Table(name = "tb_stock")
 public class Stock {
 
+    /**
+     * 库存对应的商品sku_id,不自增
+     */
     @Id
     private Long skuId;
-
-    private Integer seckillStock;// 秒杀可用库存
-
-    private Integer seckillTotal;// 已秒杀数量
-
-    private Long stock;// 正常库存
+    /**
+     * 可秒杀库存
+     */
+    private Integer seckillStock;
+    /**
+     * 秒杀总数量
+     */
+    private Integer seckillTotal;
+    /**
+     * 库存数量
+     */
+    private Integer stock;
 
     public Long getSkuId() {
         return skuId;
@@ -43,21 +52,11 @@ public class Stock {
         this.seckillTotal = seckillTotal;
     }
 
-    public Long getStock() {
+    public Integer getStock() {
         return stock;
     }
 
-    public void setStock(Long stock) {
+    public void setStock(Integer stock) {
         this.stock = stock;
-    }
-
-    @Override
-    public String toString() {
-        return "Stock{" +
-                "skuId=" + skuId +
-                ", seckillStock=" + seckillStock +
-                ", seckillTotal=" + seckillTotal +
-                ", stock=" + stock +
-                '}';
     }
 }

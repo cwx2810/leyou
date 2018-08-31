@@ -72,7 +72,7 @@ public class GoodsService {
         return new PageResult<>(spuPage.getTotal(), spuPage.getList());
     }
     /**
-     * 保存商品数据
+     * 新增商品
      *
      * @param spu
      * @return
@@ -101,26 +101,75 @@ public class GoodsService {
         }
         // 保存skus数据
         // 需要设置skus里面的spuId
-        spu.getSkus().forEach(sku -> {
-            sku.setCreateTime(spu.getCreateTime());
-            sku.setLastUpdateTime(spu.getLastUpdateTime());
-            sku.setSpuId(spu.getId());
-            // 依次保存skus数据
-            int tmp = skuMapper.insertSelective(sku);
-            if (tmp == 0) {
-                logger.error("保存Sku数据失败", sku);
-                throw new RuntimeException("保存Sku数据失败");
-            }
-            Stock stock = new Stock();
-            stock.setSkuId(sku.getId());
-            stock.setStock(sku.getStock());
-            // 再去保存库存
-            tmp = stockMapper.insertSelective(stock);
-            if (tmp == 0) {
-                logger.error("保存Sku数据失败", stock);
-                throw new RuntimeException("保存Sku数据失败");
-            }
+        saveSkusAndStocks(spu);
+        return true;
+    }
+
+
+    /**
+     * 通过商品抽象id查询抽象具体信息
+     *
+     * @param spuId
+     * @return
+     */
+    public SpuDetail querySpuDetailBySpuId(Long spuId) {
+        return spuDetailMapper.selectByPrimaryKey(spuId);
+    }
+
+    /**
+     * 通过商品抽象id查询商品信息
+     *
+     * @param spuId
+     * @return
+     */
+    public List<Sku> querySkuListBySpuId(Long spuId) {
+        Sku sku1 = new Sku();
+        sku1.setSpuId(spuId);
+        List<Sku> skuList = skuMapper.select(sku1);
+        skuList.forEach(sku -> {
+            Integer stock = stockMapper.selectByPrimaryKey(sku.getId()).getStock();
+            sku.setStock(stock);
         });
+        return skuList;
+    }
+
+    /**
+     * 修改商品
+     *
+     * @param spu
+     * @return
+     */
+    @Transactional
+    public Boolean updateGoods(Spu spu) {
+        // 修改spu的一些属性
+        spu.setLastUpdateTime(new Date());
+        // 保存修改spu数据
+        int count = spuMapper.updateByPrimaryKeySelective(spu);
+        if (count == 0) {
+            logger.error("修改spu数据失败", spu);
+            throw new RuntimeException("修改spu数据失败");
+        }
+
+        // 保存修改spuDetail数据,自带spuId
+        SpuDetail spuDetail = spu.getSpuDetail();
+        count = spuDetailMapper.updateByPrimaryKeySelective(spuDetail);
+        if (count == 0) {
+            logger.error("修改spuDetail数据失败", spuDetail);
+            throw new RuntimeException("修改spuDetail数据失败");
+        }
+
+
+        // 保存修改skus数据
+        // 需要先删除，因为不清楚是否又新增了sku具体商品,先查询所有sku的id
+        Example example = new Example(Sku.class);
+        example.createCriteria().andEqualTo("spuId", spu.getId());
+        List<Sku> skuList = skuMapper.selectByExample(example);
+        List<Long> skuIds = skuList.stream().map(Sku::getId).collect(Collectors.toList());
+        skuMapper.deleteByIdList(skuIds);
+        stockMapper.deleteByIdList(skuIds);
+
+        // 再添加skus数据以及stock数据
+        saveSkusAndStocks(spu);
         return true;
     }
     /**
@@ -138,6 +187,37 @@ public class GoodsService {
             // 查询brand，将只需要name
             Brand brand = brandMapper.selectByPrimaryKey(spu.getBrandId());
             spu.setBname(brand.getName());
+        });
+    }
+
+    /**
+     * 添加商品和库存
+     *
+     * @param spu
+     */
+    private void saveSkusAndStocks(Spu spu) {
+        spu.getSkus().forEach(sku -> {
+            sku.setCreateTime(spu.getCreateTime());
+            sku.setLastUpdateTime(spu.getLastUpdateTime());
+            sku.setSpuId(spu.getId());
+
+            // 依次保存skus数据
+            int tmp = skuMapper.insertSelective(sku);
+            if (tmp == 0) {
+                logger.error("保存Sku数据失败", sku);
+                throw new RuntimeException("保存Sku数据失败");
+            }
+
+            Stock stock = new Stock();
+            stock.setSkuId(sku.getId());
+            stock.setStock(sku.getStock());
+            // 再去保存库存
+            tmp = stockMapper.insertSelective(stock);
+            if (tmp == 0) {
+                logger.error("保存Sku数据失败", stock);
+                throw new RuntimeException("保存Sku数据失败");
+            }
+
         });
     }
 }
