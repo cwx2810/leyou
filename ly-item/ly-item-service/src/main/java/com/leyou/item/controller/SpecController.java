@@ -20,32 +20,38 @@ public class SpecController {
     @Autowired
     private SpecService specService;
     /**
-     * 通过商品分类id查询规格组
+     * 根据分类id查询规格组以及规格组内参数
      *
-     * @param cid
+     * @param cid3 商品分类id
      * @return
      */
     @GetMapping("groups/{cid}")
-    public ResponseEntity<List<SpecGroup>> querySpecGroupByCid(@PathVariable("cid") Long cid) {
-        List<SpecGroup> groups = specService.querySpecGroupByCid(cid);
+    public ResponseEntity<List<SpecGroup>> querySpecGroupByCid(@PathVariable("cid") Long cid3) {
+        List<SpecGroup> groups = specService.querySpecGroupByCid(cid3);
+
         if (groups == null || groups.size() == 0) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(groups);
     }
     /**
-     * 通过规格组id查询规格参数
+     * 查询规格参数
      *
      * @param group_id
      * @param cid
+     * @param generic
+     * @param searching
      * @return
      */
     @GetMapping("params")
-    public ResponseEntity<List<SpecParam>> querySpecParamByGid(
+    public ResponseEntity<List<SpecParam>> querySpecParam(
             @RequestParam(value = "gid", required = false) Long group_id,
-            @RequestParam(value = "cid", required = false) Long cid
+            @RequestParam(value = "cid", required = false) Long cid,
+            @RequestParam(value = "generic", required = false) Boolean generic,
+            @RequestParam(value = "searching", required = false) Boolean searching
     ) {
-        List<SpecParam> params = specService.querySpecParamByGid(group_id, cid);
+        List<SpecParam> params = specService.querySpecParam(group_id, cid, generic, searching);
+
         if (params == null || params.size() == 0) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

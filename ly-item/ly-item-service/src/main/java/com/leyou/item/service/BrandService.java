@@ -71,12 +71,30 @@ public class BrandService {
     }
 
     /**
-     * 根据商品分类id查询品牌
-     * @param cid
+     * 通过商品分类id查询品牌
+     *
+     * @param cid 商品分类id
      * @return
      */
-    public List<Brand> queryBrandsByCategoryId(Long cid) {
+    public List<Brand> queryBrandByCid(Long cid) {
         return brandMapper.queryBrandByCid(cid);
     }
 
+    /**
+     * 通过品牌id查询品牌
+     * @param brandId
+     * @return
+     */
+    public Brand queryByBrandId(Long brandId) {
+        return this.brandMapper.selectByPrimaryKey(brandId);
+    }
+
+    /**
+     * 通过品牌ids查询品牌
+     * @param brandIds
+     * @return
+     */
+    public List<Brand> queryByBrandIds(List<Long> brandIds) {
+        return this.brandMapper.selectByIdList(brandIds);
+    }
 }

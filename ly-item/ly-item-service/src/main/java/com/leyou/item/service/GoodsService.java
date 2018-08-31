@@ -149,7 +149,6 @@ public class GoodsService {
             logger.error("修改spu数据失败", spu);
             throw new RuntimeException("修改spu数据失败");
         }
-
         // 保存修改spuDetail数据,自带spuId
         SpuDetail spuDetail = spu.getSpuDetail();
         count = spuDetailMapper.updateByPrimaryKeySelective(spuDetail);
@@ -157,8 +156,6 @@ public class GoodsService {
             logger.error("修改spuDetail数据失败", spuDetail);
             throw new RuntimeException("修改spuDetail数据失败");
         }
-
-
         // 保存修改skus数据
         // 需要先删除，因为不清楚是否又新增了sku具体商品,先查询所有sku的id
         Example example = new Example(Sku.class);
@@ -167,7 +164,6 @@ public class GoodsService {
         List<Long> skuIds = skuList.stream().map(Sku::getId).collect(Collectors.toList());
         skuMapper.deleteByIdList(skuIds);
         stockMapper.deleteByIdList(skuIds);
-
         // 再添加skus数据以及stock数据
         saveSkusAndStocks(spu);
         return true;
@@ -219,5 +215,14 @@ public class GoodsService {
             }
 
         });
+    }
+
+    /**
+     * 通过spu的id查询Spu
+     * @param spuId
+     * @return
+     */
+    public Spu querySpuBySpuId(Long spuId) {
+        return spuMapper.selectByPrimaryKey(spuId);
     }
 }

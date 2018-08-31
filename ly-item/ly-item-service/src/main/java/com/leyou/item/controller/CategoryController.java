@@ -21,17 +21,50 @@ public class CategoryController {
     private CategoryService categoryService;
 
     /**
-     * 通过父节点查询商品分类
-     * @param pid
-     * @return
+     * 根据父节点查询商品分类
+     *
+     * @param parentId 商品表父节点id
+     * @author cooFive
+     * @date 2018/7/20 23:37
      */
     @GetMapping("list")
-    public ResponseEntity<List<Category>> queryCategoryByPid(@RequestParam("pid") Long pid) {
-        List<Category> list = categoryService.queryCategoryByPid(pid);
-        if (list == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+    public ResponseEntity<List<Category>> queryByParentId(@RequestParam(value = "pid", defaultValue = "0") Long parentId) {
+        List<Category> categories = categoryService.queryByParentId(parentId);
+        if (categories == null || categories.size() < 1) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return ResponseEntity.ok(list);
+        return ResponseEntity.ok(categories);
+    }
+
+
+    /**
+     * 根据商品分类id查询商品分类
+     *
+     * @param ids 分类id
+     * @return
+     */
+    @GetMapping("list/ids")
+    public ResponseEntity<List<Category>> queryByCids(@RequestParam(value = "ids", defaultValue = "0") List<Long> ids) {
+        List<Category> categories = categoryService.queryByCids(ids);
+        if (categories == null || categories.size() < 1) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(categories);
+    }
+
+    /**
+     * 根据商品分类id查询所有父商品类目
+     *
+     * @param cid
+     * @return
+     */
+    @GetMapping("/all/level")
+    public ResponseEntity<List<Category>> queryAllLevelByCid(@RequestParam(value = "cid") Long cid) {
+        List<Category> categories = categoryService.queryAllLevelByCid(cid);
+        if (categories == null || categories.size() < 1) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(categories);
     }
 
 }
