@@ -5,10 +5,7 @@ import com.leyou.item.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -23,6 +20,11 @@ public class CategoryController {
     @Autowired
     private CategoryService categoryService;
 
+    /**
+     * 通过父节点查询商品分类
+     * @param pid
+     * @return
+     */
     @GetMapping("list")
     public ResponseEntity<List<Category>> queryCategoryByPid(@RequestParam("pid") Long pid) {
         List<Category> list = categoryService.queryCategoryByPid(pid);
@@ -31,4 +33,5 @@ public class CategoryController {
         }
         return ResponseEntity.ok(list);
     }
+
 }

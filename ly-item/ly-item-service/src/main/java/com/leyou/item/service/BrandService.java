@@ -23,6 +23,15 @@ public class BrandService {
     @Autowired
     private BrandMapper brandMapper;
 
+    /**
+     * 分页查询品牌
+     * @param page
+     * @param rows
+     * @param sortBy
+     * @param desc
+     * @param key
+     * @return
+     */
     public PageResult<Brand> queryBrandByPage(Integer page, Integer rows, String sortBy, Boolean desc, String key) {
         // 分页
         PageHelper.startPage(page, rows);
@@ -45,6 +54,11 @@ public class BrandService {
         return new PageResult<>(info.getTotal(), info.getList());
     }
 
+    /**
+     * 新增品牌
+     * @param brand
+     * @param cids
+     */
     @Transactional
     public void saveBrand(Brand brand, List<Long> cids) {
         // 新增品牌信息
@@ -56,20 +70,13 @@ public class BrandService {
         }
     }
 
-    @Transactional
-    public void updateBrand(List<Long> categories, Brand brand) {
-        //修改品牌
-        brandMapper.updateByPrimaryKeySelective(brand);
-        //维护中间表
-        for (Long categoryId : categories) {
-            brandMapper.updateCategoryBrand(categoryId, brand.getId());
-        }
+    /**
+     * 根据商品分类id查询品牌
+     * @param cid
+     * @return
+     */
+    public List<Brand> queryBrandsByCategoryId(Long cid) {
+        return brandMapper.queryBrandByCid(cid);
     }
 
-    public void deleteBrand(Long bid) {
-        //删除品牌表
-        brandMapper.deleteByPrimaryKey(bid);
-        //维护中间表
-        brandMapper.deleteCategoryBrandByBid(bid);
-    }
 }

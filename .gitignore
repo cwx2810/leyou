@@ -4,5 +4,11 @@
 *.class
 
 
+
 .idea/
-target/
+**/target/
+dist/
+**/node_modules/
+src/assets/
+**/dist/
+.cache

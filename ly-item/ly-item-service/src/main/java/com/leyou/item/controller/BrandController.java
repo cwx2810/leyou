@@ -8,6 +8,7 @@ import com.leyou.item.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,7 +27,7 @@ public class BrandController {
     private CategoryService categoryService;
 
     /**
-     * 品牌查询
+     * 分页查询品牌
      * @param page
      * @param rows
      * @param sortBy
@@ -60,39 +61,19 @@ public class BrandController {
     }
 
     /**
-     * 通过品牌id查询商品分类
-     * @param bid
+     * 通过商品分类id查询品牌
+     *
+     * @param cid 商品分类id
      * @return
      */
-    @GetMapping("bid/{bid}")
-    public ResponseEntity<List<Category>> queryByBrandId(@PathVariable("bid") Long bid) {
-        List<Category> list = this.categoryService.queryByBrandId(bid);
-        if (list == null || list.size() < 1) {
+    @GetMapping("cid/{cid}")
+    public ResponseEntity<List<Brand>> queryBrandByCid(@PathVariable("cid") Long cid) {
+        List<Brand> brands = this.brandService.queryBrandsByCategoryId(cid);
+        if (brands == null || CollectionUtils.isEmpty(brands)) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return ResponseEntity.ok(list);
+        return ResponseEntity.ok(brands);
     }
 
-    /**
-     * 更新品牌
-     * @param categories
-     * @param brand
-     * @return
-     */
-    @PutMapping
-    public ResponseEntity<Void> updateBrand(@RequestParam("cids") List<Long> categories, Brand brand) {
-        this.brandService.updateBrand(categories, brand);
-        return ResponseEntity.status(HttpStatus.OK).body(null);
-    }
 
-    /**
-     * 删除品牌
-     * @param bid
-     * @return
-     */
-    @DeleteMapping
-    public ResponseEntity<Void> deleteBrand(@RequestParam("id") Long bid) {
-        this.brandService.deleteBrand(bid);
-        return ResponseEntity.status(HttpStatus.OK).body(null);
-    }
 }
